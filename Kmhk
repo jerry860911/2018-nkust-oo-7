@@ -1,6 +1,0 @@
-import pandas as pd
-url = 'http://www.kmhk.org.tw/news/bedno.asp'
-table = table.drop(table.columns[0:23],axis=0)
-table = table.drop(table.columns[30:40],axis=0)
-table = table.drop(table.columns[5:113],axis=1)
-print(table)
