@@ -5,7 +5,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
+
 public class MainActivity extends AppCompatActivity {
+
 
 
     private static boolean Login = false;
@@ -25,9 +27,10 @@ public class MainActivity extends AppCompatActivity {
             Intent intent = new Intent(this,LoginActivity.class);
             startActivity(intent);
             Login =true;
-        }
-    }
 
+        }
+
+    }
 
 
 

@@ -33,7 +33,7 @@ public class MapAcviticyTest extends FragmentActivity implements OnMapReadyCallb
     private FusedLocationProviderClient mFusedLocationProvider;
     private static boolean rLocationGranted = false;
     private FusedLocationProviderClient mFusedLocationClient;
-
+    //char i ;
 
 
     @Override
@@ -55,7 +55,6 @@ public class MapAcviticyTest extends FragmentActivity implements OnMapReadyCallb
         }
     }
 
-    char i ;
 
     private boolean checkPlayService() //版本確認
     {

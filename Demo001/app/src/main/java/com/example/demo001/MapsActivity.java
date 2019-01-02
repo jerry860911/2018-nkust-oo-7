@@ -40,6 +40,8 @@ import com.google.android.gms.tasks.Task;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -51,6 +53,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private FusedLocationProviderClient mFusedLocationProvider;
     private FusedLocationProviderClient mFusedLocationClient;
     private EditText mSearchText;
+
+    LatLng Changgung = new LatLng(22.650063,120.356838); // 加入地圖標記
+    LatLng Eda = new LatLng(22.765907,120.364355);
+    LatLng kumh = new LatLng(22.646002,120.309581);
+    LatLng Tatung = new LatLng(22.627035,120.297326);
+    LatLng Vghks = new LatLng(22.677537,120.322504);
+    LatLng Yuanhos = new LatLng(22.615373,120.297852);
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,7 +81,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         final Spinner spinner = (Spinner)findViewById(R.id.spinner);
-        final String[] list = {"現在位置","高雄長庚紀念醫院","義大醫院","高雄醫學大學附設中和紀念醫院","高雄市立大同醫院","高雄榮民總醫院","阮綜合醫療社團法人阮綜合醫院"};
+        final String[] list = {"=====選擇醫院=====","高雄長庚紀念醫院","義大醫院","高雄醫學大學附設中和紀念醫院","高雄市立大同醫院","高雄榮民總醫院","阮綜合醫療社團法人阮綜合醫院"};
         ArrayAdapter<String> lunchList = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_dropdown_item,
                 list);
@@ -78,7 +89,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MapsActivity.this,list[position], Toast.LENGTH_SHORT).show();
+                //Toast.makeText(MapsActivity.this,list[position], Toast.LENGTH_SHORT).show();
 
                 if(list[position] == list[0] )
                 {
@@ -117,6 +128,80 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+
+    }
+
+    public void searchnearhos(View v)
+    {
+        mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
+        try {
+            if (rLocationGranted == true) {
+                Task location = mFusedLocationProvider.getLastLocation();
+                location.addOnCompleteListener(new OnCompleteListener() {
+                    @Override
+                    public void onComplete(@NonNull Task task) {
+                        if (task.isSuccessful()) {
+                            //find location
+                            Location mLocation = (Location) task.getResult();
+                            LatLng mLatLng = new LatLng(mLocation.getLatitude(), mLocation.getLongitude());
+
+                            float[] resultsChanggung = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),Changgung.latitude,Changgung.longitude,resultsChanggung);
+
+                            float[] resultsEda = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),Eda.latitude,Eda.longitude,resultsEda);
+
+                            float[] resultskumh = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),kumh.latitude,kumh.longitude,resultskumh);
+
+                            float[] resultsTatung = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),Tatung.latitude,Tatung.longitude,resultsTatung);
+
+                            float[] resultsVghks = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),Vghks.latitude,Vghks.longitude,resultsVghks);
+
+                            float[] resultsYuanhos = new float[1];
+                            Location.distanceBetween(mLocation.getLatitude(),mLocation.getLongitude(),Yuanhos.latitude,Yuanhos.longitude,resultsYuanhos);
+
+                            float nearest[] = {resultsChanggung[0],resultsEda[0],resultskumh[0],resultsTatung[0],resultsVghks[0],resultsYuanhos[0]};
+                            float max=nearest[0], min=nearest[0];
+                            for(int x=0;x<nearest.length;x++)
+                            {
+                                if(nearest[x]>max) max=nearest[x];
+                                if(nearest[x]<min) min=nearest[x];
+                            }
+
+                            if(min==resultsChanggung[0])
+                            {
+                                moveMap(Changgung);
+                            }else if(min==resultsEda[0]){
+                                moveMap(Eda);
+                            }else if(min==resultskumh[0]){
+                                moveMap(kumh);
+                            }else if(min==resultsTatung[0]){
+                                moveMap(Tatung);
+                            }else if(min==resultsVghks[0]){
+                                moveMap(Vghks);
+                            }else if(min==resultsYuanhos[0]){
+                                moveMap(Yuanhos);
+                            }
+
+                            Log.i("Search test Changgung", String.valueOf(resultsChanggung[0]));
+                            Log.i("Search test Eda", String.valueOf(resultsEda[0]));
+                            Log.i("Search test kumh", String.valueOf(resultskumh[0]));
+                            Log.i("Search test Tatung", String.valueOf(resultsTatung[0]));
+                            Log.i("Search test Vghks", String.valueOf(resultsVghks[0]));
+                            Log.i("Search test Yuanhos", String.valueOf(resultsYuanhos[0]));
+                            Log.i("Search test near", String.valueOf(min));
+
+                        }
+                    }
+                });
+            }
+        } catch (SecurityException ex) {
+            Log.e("location error", ex.getMessage());
+        }
+
 
     }
 
@@ -231,37 +316,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //now location end
 
 
-
-
         //地圖標記
 
         //Changgung
-        LatLng Changgung = new LatLng(22.650063,120.356838); // 加入地圖標記
+        //LatLng Changgung = new LatLng(22.650063,120.356838); // 加入地圖標記
         String Changunginfo = "put info here";
         addMarker(Changgung, "高雄長庚紀念醫院",Changunginfo);
 
         //eda
-        LatLng Eda = new LatLng(22.765907,120.364355);
+        //LatLng Eda = new LatLng(22.765907,120.364355);
         String Edainfo = "put info here";
         addMarker(Eda,"義大醫院",Edainfo);
 
         //kumh
-        LatLng kumh = new LatLng(22.646002,120.309581);
+        //LatLng kumh = new LatLng(22.646002,120.309581);
         String kumhinfo = "put info here";
         addMarker(kumh,"高雄醫學大學附設中和紀念醫院",kumhinfo);
 
         //Tatung
-        LatLng Tatung = new LatLng(22.627035,120.297326);
+        //LatLng Tatung = new LatLng(22.627035,120.297326);
         String Tatunginfo = "put info here";
         addMarker(Tatung,"高雄市立大同醫院",Tatunginfo);
 
         //Vghks
-        LatLng Vghks = new LatLng(22.677537,120.322504);
+        //LatLng Vghks = new LatLng(22.677537,120.322504);
         String Vghksinfo = "put info here";
         addMarker(Vghks,"高雄榮民總醫院",Vghksinfo);
 
         //Yuanhos
-        LatLng Yuanhos = new LatLng(22.615373,120.297852);
+        //LatLng Yuanhos = new LatLng(22.615373,120.297852);
         String Yuanhosinfo = "put info here";
         addMarker(Yuanhos,"阮綜合醫療社團法人阮綜合醫院",Yuanhosinfo);
 
@@ -286,6 +369,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
 
         }
+
 
 
     private void moveMap(LatLng place) {
